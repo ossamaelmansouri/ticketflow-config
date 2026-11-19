@@ -1,0 +1,20 @@
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh
+
+# Correctif TP3 : sans cette ligne, POST /actuator/refresh répond 500.
+# Le refresh recrée le client Eureka (RefreshScope.refreshAll) et celui-ci
+# échoue (NullPointerException dans DiscoveryClient.updateInstanceRemoteStatus).
+# Le client Eureka n'a pas besoin d'être recréé pour recharger ticketflow.message.
+eureka:
+  client:
+    refresh:
+      enable: false
+
+ticketflow:
+  message: "Bienvenue dans TicketFlow - configuration v1"
