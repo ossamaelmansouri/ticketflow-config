@@ -17,4 +17,4 @@ eureka:
       enable: false
 
 ticketflow:
-  message: "Bienvenue dans TicketFlow - configuration v1"
+  message: "Bienvenue dans TicketFlow - configuration v2"
