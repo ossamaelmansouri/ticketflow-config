@@ -1,0 +1,43 @@
+server:
+  port: 8083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          # Ne jamais attendre indéfiniment un autre service (TP4, section 6).
+          default:
+            connect-timeout: 2000
+            read-timeout: 3000
+          event-service:
+            # BASIC : méthode, URL, statut et durée. Pas de corps ni d'en-têtes.
+            loggerLevel: basic
+      # TP5 : chaque méthode Feign passe par un circuit breaker Resilience4j.
+      # Avec les identifiants alphanumériques, l'instance de
+      # EventClient#getById(Long) s'appelle EventClientgetByIdLong.
+      circuitbreaker:
+        enabled: true
+        alphanumeric-ids:
+          enabled: true
+
+ticketflow:
+  resilience:
+    event-service:
+      sliding-window-size: 10
+      minimum-number-of-calls: 5
+      failure-rate-threshold: 50
+      wait-in-open-state: 10s
+      permitted-calls-in-half-open-state: 3
+      time-limit: 4s
+
+logging:
+  level:
+    # Les logs Feign ne sortent qu'au niveau DEBUG du client concerné.
+    com.ticketflow.bookingservice.clients.EventClient: DEBUG
